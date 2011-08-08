@@ -139,10 +139,14 @@ namespace IRCage
                         {
                             sendRaw("JOIN :" + this.channel);
                         }
+                            //Must add commands here
                         else if (code == "PRIVMSG")
                         {
                             String nick = inputLine.Split(' ').ElementAt(0).Substring(1, inputLine.IndexOf('!') - 1);
                             String message = inputLine.Substring(1).Substring(inputLine.IndexOf(':', 1));
+                            if (1 == 1)
+                            {
+                            }
                             try
                             {
                                 if (message.Length >= 8 && message.Substring(0, 8) == CODE_ACTION + "ACTION " && message.Last() == CODE_ACTION.First<char>())
