@@ -24,7 +24,7 @@ namespace IRCage
             base.Name = "IRCage";
             base.Description = "IRC integration for TDSM";
             base.Author = "AWRyder";
-            base.Version = "0.1";
+            base.Version = "0.5";
             base.TDSMBuild = 29;
             this.isEnabled = true;
 
@@ -54,9 +54,10 @@ namespace IRCage
             String realName = pfile.getValue("realname", "IRC bot plugin for TDSM by AWRyder");
             String serverPass = pfile.getValue("serverpass", "");
             String quitMessage = pfile.getValue("quitMessage", "Bye Bye!");
+            String commandDelim = pfile.getValue("commandDelim", "+");
             pfile.Save();
 
-            mircc = new AIRCH(hostname, port, channelName, nick, username, realName, serverPass,quitMessage);
+            mircc = new AIRCH(hostname, port, channelName, nick, username, realName, serverPass,quitMessage, commandDelim);
             mircc.connect();
 
             registerHook(Hooks.PLAYER_CHAT);

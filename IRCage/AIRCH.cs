@@ -28,6 +28,7 @@ namespace IRCage
         string realname;
         string channel;
         String quitMessage;
+        Char commandDelim;
 
         Thread pingThread;
         Thread mainLoop;
@@ -36,7 +37,7 @@ namespace IRCage
         StreamReader reader;
         StreamWriter writer;
 
-        public AIRCH(String host, int port, String channel = "#terraria", String nick="IRCage", String username="IRCage", String realname="IRC support for TDSM", String pass = "", String quitMessage = "Bye bye!")
+        public AIRCH(String host, int port, String channel = "#terraria", String nick="IRCage", String username="IRCage", String realname="IRC support for TDSM", String pass = "", String quitMessage = "Bye bye!", String commandDelim = "+")
         {
             this.host = host;
             this.port = port;
@@ -46,6 +47,7 @@ namespace IRCage
             this.channel = channel;
             this.pass = pass;
             this.quitMessage = quitMessage;
+            this.commandDelim = commandDelim.First();
         }
 
         public void connect()
@@ -144,25 +146,47 @@ namespace IRCage
                         {
                             String nick = inputLine.Split(' ').ElementAt(0).Substring(1, inputLine.IndexOf('!') - 1);
                             String message = inputLine.Substring(1).Substring(inputLine.IndexOf(':', 1));
-                            if (1 == 1)
+                            //It's a command!
+                            if (message.First() == commandDelim)
                             {
-                            }
-                            try
-                            {
-                                if (message.Length >= 8 && message.Substring(0, 8) == CODE_ACTION + "ACTION " && message.Last() == CODE_ACTION.First<char>())
+                                String[] argv = message.Split(' ');
+                                argv[0] = argv.First().Substring(1);
+
+                                if (argv[0] == "list")
                                 {
-                                    String action = message.Replace(CODE_ACTION, "");
-                                    action = action.Substring(7);
-                                    Program.server.notifyAll("*" + nick + " " + action);
-                                }
-                                else
-                                {
-                                    message = Regex.Replace(message, "[^ a-zA-Z0-9!?-_\"#$%&/()=@'<>.,:;+*\\[\\]{}~\\^|\\\\«»]", "");
-                                    NetMessage.SendData(25, -1, -1, "<[IRC]" + nick + "> " + message, 255, 150, 150, 150);
+                                    Player[] pls = Program.server.PlayerList;
+                                    String sPlayerList = "";
+                                    for (int i = 0; i < pls.Length; i++)
+                                    {
+                                        Player pl = pls[i];
+                                        sPlayerList += pl.Name;
+                                        if (i < pls.Length - 1) { 
+                                            sPlayerList += ", "; 
+                                        }
+                                    }
+                                    sendToChan("Online Players: " + sPlayerList);
                                 }
                             }
-                            catch (Exception)
+                            //It's just a msg
+                            else
                             {
+                                try
+                                {
+                                    if (message.Length >= 8 && message.Substring(0, 8) == CODE_ACTION + "ACTION " && message.Last() == CODE_ACTION.First<char>())
+                                    {
+                                        String action = message.Replace(CODE_ACTION, "");
+                                        action = action.Substring(7);
+                                        Program.server.notifyAll("*" + nick + " " + action);
+                                    }
+                                    else
+                                    {
+                                        message = Regex.Replace(message, "[^ a-zA-Z0-9!?-_\"#$%&/()=@'<>.,:;+*\\[\\]{}~\\^|\\\\«»]", "");
+                                        NetMessage.SendData(25, -1, -1, "<[IRC]" + nick + "> " + message, 255, 150, 150, 150);
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                }
                             }
                         }
                     }
