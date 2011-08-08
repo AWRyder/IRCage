@@ -1,0 +1,31 @@
+07-08-2011 00:57:56 Main> Logging started to file "C:\Users\Awkens\Documents\Visual Studio 2010\Projects\IRCage\IRCage\bin\Debug\Data\server_20110807_0057.log".
+07-08-2011 00:57:56 Main> Starting remote console server
+07-08-2011 00:57:56 Main> The rcon login database was empty, a new user "Owner" has been created with password: 63bf-ecf4-b8ff-a794
+07-08-2011 00:57:56 Main> Saved file "rcon_logins.properties".
+07-08-2011 00:57:56 RCon> Remote console server started on 127.0.0.1:7023.
+07-08-2011 00:57:56 Main> Preparing Server Data...
+07-08-2011 00:57:56 Main> Generating World 'C:\Users\Awkens\Documents\Visual Studio 2010\Projects\IRCage\IRCage\bin\Debug\Worlds\world1.wld'
+07-08-2011 00:57:56 Main> Generated seed: 11
+07-08-2011 00:57:56 Main> Creating tile array of 4200x1200, 57MB
+07-08-2011 00:57:56 Main> Resetting game objects: started.
+07-08-2011 00:57:57 Main> Resetting game objects: done in 571ms.
+07-08-2011 00:58:00 Main> Generating world terrain: started.
+07-08-2011 00:58:02 Main> Generating world terrain: done in 2,318s.
+07-08-2011 00:58:02 Main> Adding sand...
+07-08-2011 00:58:03 Main> Generating hills...
+07-08-2011 00:58:03 Main> Putting dirt behind dirt: started.
+07-08-2011 00:58:04 Main> Putting dirt behind dirt: done in 989ms.
+07-08-2011 00:58:04 Main> Placing rocks in the dirt...
+07-08-2011 00:58:06 Main> Placing dirt in the rocks...
+07-08-2011 00:58:07 Main> Adding clay...
+07-08-2011 00:58:07 Main> Making random holes: started.
+07-08-2011 00:58:09 Main> Making random holes: done in 1,723s.
+07-08-2011 00:58:09 Main> Generating small caves: started.
+07-08-2011 00:58:09 Main> Generating small caves: done in 122ms.
+07-08-2011 00:58:09 Main> Generating large caves: started.
+07-08-2011 00:58:11 Main> Generating large caves: done in 1,836s.
+07-08-2011 00:58:11 Main> Generating surface caves...
+07-08-2011 00:58:11 Main> Generating jungle: started.
+07-08-2011 00:58:21 Main> Generating jungle: done in 9,976s.
+07-08-2011 00:58:21 Main> Generating floating islands...
+07-08-2011 00:58:21 Main> Adding mushroom patches...

@@ -1,0 +1,8 @@
+C:\Users\Awkens\documents\visual studio 2010\Projects\IRCage\IRCage\bin\Release\IRCage.dll
+C:\Users\Awkens\documents\visual studio 2010\Projects\IRCage\IRCage\bin\Release\IRCage.pdb
+C:\Users\Awkens\documents\visual studio 2010\Projects\IRCage\IRCage\bin\Release\Terraria_Server.exe
+C:\Users\Awkens\documents\visual studio 2010\Projects\IRCage\IRCage\bin\Release\Terraria_Server.pdb
+C:\Users\Awkens\documents\visual studio 2010\Projects\IRCage\IRCage\bin\Release\Terraria_Server.xml
+C:\Users\Awkens\documents\visual studio 2010\Projects\IRCage\IRCage\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Users\Awkens\documents\visual studio 2010\Projects\IRCage\IRCage\obj\x86\Release\IRCage.dll
+C:\Users\Awkens\documents\visual studio 2010\Projects\IRCage\IRCage\obj\x86\Release\IRCage.pdb
