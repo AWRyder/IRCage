@@ -154,17 +154,20 @@ namespace IRCage
 
                                 if (argv[0] == "list")
                                 {
-                                    Player[] pls = Program.server.PlayerList;
+                                    var pls = from p in Server.players where p.Active select p.Name;
                                     String sPlayerList = "";
-                                    for (int i = 0; i < pls.Length; i++)
+                                    foreach ( String pl in pls )
                                     {
-                                        Player pl = pls[i];
-                                        sPlayerList += pl.Name;
-                                        if (i < pls.Length - 1) { 
-                                            sPlayerList += ", "; 
-                                        }
+                                        sPlayerList += pl + ", ";
                                     }
-                                    sendToChan("Online Players: " + sPlayerList);
+                                    if (sPlayerList != "")
+                                    {
+                                        sendToChan("Online Players: " + sPlayerList.Substring(0,sPlayerList.Length-2));
+                                    }
+                                    else
+                                    {
+                                        sendToChan("No online players at the moment.");
+                                    }
                                 }
                             }
                             //It's just a msg
@@ -191,8 +194,9 @@ namespace IRCage
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Program.tConsole.WriteLine("IRCAGE ERROR: " + ex.Message);
                     //mainLoop.Abort();
                 }
             }
