@@ -52,12 +52,14 @@ namespace IRCage
             String nick = pfile.getValue("nick", "IRCage");
             String username = pfile.getValue("username", "IRCage");
             String realName = pfile.getValue("realname", "IRC bot plugin for TDSM by AWRyder");
+            String nspass = pfile.getValue("nickserv-pass", "");
             String serverPass = pfile.getValue("serverpass", "");
             String quitMessage = pfile.getValue("quitMessage", "Bye Bye!");
-            String commandDelim = pfile.getValue("commandDelim", "+");
+            String commandDelim = pfile.getValue("command_initial", "+");
+            bool ircColors = pfile.getValue("irc-colors", false);
             pfile.Save();
 
-            mircc = new AIRCH(hostname, port, channelName, nick, username, realName, serverPass,quitMessage, commandDelim);
+            mircc = new AIRCH(hostname, port, channelName, nick, username, realName,nspass, serverPass,quitMessage, commandDelim,ircColors);
             mircc.connect();
 
             registerHook(Hooks.PLAYER_CHAT);

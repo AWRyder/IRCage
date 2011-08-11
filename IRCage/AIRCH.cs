@@ -23,12 +23,14 @@ namespace IRCage
         String host;
         int port;
         String pass;
+        String nspass;
         string nick;
         string username;
         string realname;
         string channel;
         String quitMessage;
         Char commandDelim;
+        bool ircColors;
 
         Thread pingThread;
         Thread mainLoop;
@@ -37,7 +39,7 @@ namespace IRCage
         StreamReader reader;
         StreamWriter writer;
 
-        public AIRCH(String host, int port, String channel = "#terraria", String nick="IRCage", String username="IRCage", String realname="IRC support for TDSM", String pass = "", String quitMessage = "Bye bye!", String commandDelim = "+")
+        public AIRCH(String host, int port, String channel = "#terraria", String nick="IRCage", String username="IRCage", String realname="IRC support for TDSM",String nspass="", String pass = "", String quitMessage = "Bye bye!", String commandDelim = "+", bool ircColors=false)
         {
             this.host = host;
             this.port = port;
@@ -45,9 +47,11 @@ namespace IRCage
             this.username = username;
             this.realname = realname;
             this.channel = channel;
+            this.nspass = nspass;
             this.pass = pass;
             this.quitMessage = quitMessage;
             this.commandDelim = commandDelim.First();
+            this.ircColors = ircColors;
         }
 
         public void connect()
@@ -130,74 +134,94 @@ namespace IRCage
                     {
                         debug("RAW: " + inputLine);
 
-                        String code = inputLine.Split(' ').ElementAt(1);
-
-                        if (inputLine.Substring(0, 6) == "PING :")
-                        {
-                            String answer = inputLine.Substring(6);
-                            sendRaw("PONG :" + answer);
-                        }
-                        else if (code == "001")
-                        {
-                            sendRaw("JOIN :" + this.channel);
-                        }
-                            //Must add commands here
-                        else if (code == "PRIVMSG")
-                        {
-                            String nick = inputLine.Split(' ').ElementAt(0).Substring(1, inputLine.IndexOf('!') - 1);
-                            String message = inputLine.Substring(1).Substring(inputLine.IndexOf(':', 1));
-                            //It's a command!
-                            if (message.First() == commandDelim)
-                            {
-                                String[] argv = message.Split(' ');
-                                argv[0] = argv.First().Substring(1);
-
-                                if (argv[0] == "list")
-                                {
-                                    var pls = from p in Server.players where p.Active select p.Name;
-                                    String sPlayerList = "";
-                                    foreach ( String pl in pls )
-                                    {
-                                        sPlayerList += pl + ", ";
-                                    }
-                                    if (sPlayerList != "")
-                                    {
-                                        sendToChan("Online Players: " + sPlayerList.Substring(0,sPlayerList.Length-2));
-                                    }
-                                    else
-                                    {
-                                        sendToChan("No online players at the moment.");
-                                    }
-                                }
-                            }
-                            //It's just a msg
-                            else
-                            {
-                                try
-                                {
-                                    if (message.Length >= 8 && message.Substring(0, 8) == CODE_ACTION + "ACTION " && message.Last() == CODE_ACTION.First<char>())
-                                    {
-                                        String action = message.Replace(CODE_ACTION, "");
-                                        action = action.Substring(7);
-                                        Program.server.notifyAll("*" + nick + " " + action);
-                                    }
-                                    else
-                                    {
-                                        message = Regex.Replace(message, "[^ a-zA-Z0-9!?-_\"#$%&/()=@'<>.,:;+*\\[\\]{}~\\^|\\\\«»]", "");
-                                        NetMessage.SendData(25, -1, -1, "<[IRC]" + nick + "> " + message, 255, 150, 150, 150);
-                                    }
-                                }
-                                catch (Exception)
-                                {
-                                }
-                            }
-                        }
+                        parseIRCRaw(inputLine);
                     }
                 }
                 catch (Exception ex)
                 {
                     Program.tConsole.WriteLine("IRCAGE ERROR: " + ex.Message);
                     //mainLoop.Abort();
+                }
+            }
+        }
+
+        private void parseIRCRaw(String raw)
+        {
+            if (raw.Substring(0, 6) == "PING :")
+            {
+                String answer = raw.Substring(6);
+                sendRaw("PONG :" + answer);
+                return;
+            }
+
+            String code = raw.Split(' ').ElementAt(1);
+
+            switch (code)
+            {
+                case "001": sendRaw("JOIN :" + this.channel); break;
+                   
+                case "PRIVMSG": 
+                {
+                    String nick = raw.Split(' ').ElementAt(0).Substring(1, raw.IndexOf('!') - 1);
+                    String message = raw.Substring(1).Substring(raw.IndexOf(':', 1));
+                    //It's a command!
+                    if (message.First() == commandDelim)
+                    {
+                        String[] argv = message.Split(' ');
+                        argv[0] = argv.First().Substring(1);
+
+                        parseIRCCommand(argv);
+                    }
+                    //It's just a msg
+                    else
+                    {
+                        try
+                        {
+                            if (message.Length >= 8 && message.Substring(0, 8) == CODE_ACTION + "ACTION " && message.Last() == CODE_ACTION.First<char>())
+                            {
+                                String action = message.Replace(CODE_ACTION, "");
+                                action = action.Substring(7);
+                                Program.server.notifyAll("*" + nick + " " + action);
+                            }
+                            else
+                            {
+                                message = Regex.Replace(message, "[^ a-zA-Z0-9!?-_\"#$%&/()=@'<>.,:;+*\\[\\]{}~\\^|\\\\«»]", "");
+                                NetMessage.SendData(25, -1, -1, "<[IRC]" + nick + "> " + message, 255, 150, 150, 150);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+                    break;
+                }
+                case "JOIN":
+                {
+
+                    break;
+                }
+
+
+            }
+        }
+
+        private void parseIRCCommand(String[] argv)
+        {
+            if (argv[0] == "list")
+            {
+                var pls = from p in Server.players where p.Active select p.Name;
+                String sPlayerList = "";
+                foreach (String pl in pls)
+                {
+                    sPlayerList += pl + ", ";
+                }
+                if (sPlayerList != "")
+                {
+                    sendToChan("Online Players: " + sPlayerList.Substring(0, sPlayerList.Length - 2));
+                }
+                else
+                {
+                    sendToChan("No online players at the moment.");
                 }
             }
         }
