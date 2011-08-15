@@ -1,6 +1,4 @@
-﻿//#define DEBUG
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,9 +14,9 @@ namespace IRCage
 {
     class AIRCH
     {
-        String CODE_ACTION = "" + (char)001;
-        String CODE_BOLD = "" + (char)002;
-        String CODE_COLOR = "" + (char)003;
+        public static String CODE_ACTION = "" + (char)001;
+        public static String CODE_BOLD = "" + (char)002;
+        public static String CODE_COLOR = "" + (char)003;
 
         static Random r =new Random();
 
@@ -78,7 +76,7 @@ namespace IRCage
                 mainLoop = new Thread(this.loop);
                 mainLoop.Start();
             } catch(Exception ex) {
-                Program.tConsole.WriteLine("IRCAGE ERROR: " + ex);
+                Program.tConsole.WriteLine("IRCAGE ERROR (connect): " + ex);
                 this.close();
             }
         }
@@ -141,7 +139,7 @@ namespace IRCage
                 }
                 catch (Exception ex)
                 {
-                    Program.tConsole.WriteLine("IRCAGE ERROR: " + ex.Message);
+                    Program.tConsole.WriteLine("IRCAGE ERROR (loop): " + ex.Message);
                     //mainLoop.Abort();
                 }
             }
@@ -169,13 +167,16 @@ namespace IRCage
                 {
                     //15-08-2011 14:18:47 ?> [Debug] RAW: :NickServ!NickServ@services.esper.net NOTICE IRCage :This nickname is registered. Please choose a different nickname, or identify via /msg NickServ identify <password>.
                     //Allright?
-                    String nick = raw.Split(' ').ElementAt(0).Substring(1, raw.IndexOf('!') - 1);
-                    String message = raw.Substring(1).Substring(raw.IndexOf(':', 1));
-                    if (nick.ToLower() == "nickserv" && message.Contains("This nickname is registered.") )
+                    if (raw.IndexOf('!') >= 1)
                     {
-                        sendRaw("PRIVMSG nickserv :id "+this.nspass);
+                        String nick = raw.Split(' ').ElementAt(0).Substring(1, raw.IndexOf('!') - 1);
+                        String message = raw.Substring(1).Substring(raw.IndexOf(':', 1));
+                    
+                        if (this.nspass.Length > 0 && nick.ToLower() == "nickserv" && message.Contains("This nickname is registered.") )
+                        {
+                            sendRaw("PRIVMSG nickserv :id "+this.nspass);
+                        }
                     }
-
                     break;
                 }
                 case "PRIVMSG": 
@@ -288,6 +289,15 @@ namespace IRCage
                 nr += AIRCH.r.Next(10);
             }
             return nr;
+        }
+
+        public bool getIrcColors()
+        {
+            return this.ircColors;
+        }
+        public void setIrcColors(bool l)
+        {
+            this.ircColors = l;
         }
     }
 }

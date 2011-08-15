@@ -67,6 +67,8 @@ namespace IRCage
             registerHook(Hooks.PLAYER_LOGOUT);
             registerHook(Hooks.PLAYER_DEATH);
             registerHook(Hooks.PLAYER_COMMAND);
+
+            AddCommand("irc").WithAccessLevel(Terraria_Server.Commands.AccessLevel.OP).Calls(this.parseCommands);
         }
 
         public override void Disable()
@@ -77,32 +79,70 @@ namespace IRCage
             this.mircc.close();
         }
 
+        public void parseCommands(Server serv, Terraria_Server.Commands.ISender sender,Terraria_Server.Commands.ArgumentList argv)
+        {
+            if (sender is Player)
+            {
+                if (argv.GetString(0) == "colors")
+                {
+                    if (argv.GetString(1) == "on") { mircc.setIrcColors(true); sender.sendMessage("IRC colors enabled."); }
+                    else if (argv.GetString(1) == "off") { mircc.setIrcColors(false); sender.sendMessage("IRC colors disabled."); }
+                    else
+                    {
+                        sender.sendMessage("Syntax is: /irc colors <on/off> ");
+                    }
+                }
+                else if (argv.GetString(0) == "help")
+                {
+                    sender.sendMessage("Syntax: /irc <option>");
+                    sender.sendMessage("Options: help, colors");
+                }
+                else
+                {
+                    sender.sendMessage("No such option. ");
+                }
+            }
+        }
+
         public override void onPlayerChat(MessageEvent Event)
         {
-            mircc.sendToChan("<"+Event.Sender.Name+"> "+Event.Message);
+            String msg = "<" + Event.Sender.Name + "> " + Event.Message;
+            if (mircc.getIrcColors()) { msg = AIRCH.CODE_COLOR + "1" + msg; }
+            mircc.sendToChan(msg);
             base.onPlayerChat(Event);
         }
         public override void onPlayerCommand(PlayerCommandEvent Event)
         {
             if (Event.Message.StartsWith("/me "))
             {
-                mircc.sendToChan("* "+Event.Sender.Name+" "+Event.Message.Substring(4));
+                String msg = "* " + Event.Sender.Name + " " + Event.Message.Substring(4);
+                if (mircc.getIrcColors()) { msg = AIRCH.CODE_COLOR + "6" + msg; }
+                mircc.sendToChan(msg);
             }
             base.onPlayerCommand(Event);
         }
         public override void  onPlayerDeath(PlayerDeathEvent Event)
         {
-            mircc.sendToChan(Event.Sender.Name+""+Event.DeathMessage);
- 	         base.onPlayerDeath(Event);
+            String msg = Event.Sender.Name + Event.DeathMessage;
+            if (mircc.getIrcColors()) { msg = AIRCH.CODE_COLOR + "4" + msg; }
+            mircc.sendToChan(msg);
+ 	        base.onPlayerDeath(Event);
         }
         public override void onPlayerJoin(PlayerLoginEvent Event)
         {
-            mircc.sendToChan(Event.Sender.Name + " has joined the server.");
+            String msg = Event.Sender.Name + " has joined the server.";
+            if (mircc.getIrcColors()) { msg = AIRCH.CODE_COLOR + "3" + msg; }
+            mircc.sendToChan(msg);
             base.onPlayerJoin(Event);
         }
         public override void onPlayerLogout(PlayerLogoutEvent Event)
         {
-            mircc.sendToChan(Event.Sender.Name + " has left the server.");
+            if (Event.Sender.Name.Length > 0)
+            {
+                String msg = Event.Sender.Name + " has left the server.";
+                if (mircc.getIrcColors()) { msg = AIRCH.CODE_COLOR + "3" + msg; }
+                mircc.sendToChan(msg);
+            }
             base.onPlayerLogout(Event);
         }
 
