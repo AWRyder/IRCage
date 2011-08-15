@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRCage", "IRCage\IRCage.csproj", "{789BFF0C-E9C3-4B23-BDBE-864FD71D0E21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terraria_Server", "..\..\..\..\Desktop\DeathCradle-Terraria-s-Dedicated-Server-Mod-efb1f73\Terraria_Server\Terraria_Server.csproj", "{6B42E70C-75CD-410B-9D4A-3EA75B6F5176}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terraria_Server", "..\..\..\..\DeathCradle-Terraria-s-Dedicated-Server-Mod-6d000e5\Terraria_Server\Terraria_Server.csproj", "{6B42E70C-75CD-410B-9D4A-3EA75B6F5176}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
