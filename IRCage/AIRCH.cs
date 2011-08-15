@@ -19,7 +19,9 @@ namespace IRCage
         String CODE_ACTION = "" + (char)001;
         String CODE_BOLD = "" + (char)002;
         String CODE_COLOR = "" + (char)003;
-        
+
+        static Random r =new Random();
+
         String host;
         int port;
         String pass;
@@ -159,7 +161,23 @@ namespace IRCage
             switch (code)
             {
                 case "001": sendRaw("JOIN :" + this.channel); break;
-                   
+                case "433":{ 
+                    sendRaw("NICK :"+this.nick+ genRandomNum().ToString());
+                    break;
+                }
+                case "NOTICE":
+                {
+                    //15-08-2011 14:18:47 ?> [Debug] RAW: :NickServ!NickServ@services.esper.net NOTICE IRCage :This nickname is registered. Please choose a different nickname, or identify via /msg NickServ identify <password>.
+                    //Allright?
+                    String nick = raw.Split(' ').ElementAt(0).Substring(1, raw.IndexOf('!') - 1);
+                    String message = raw.Substring(1).Substring(raw.IndexOf(':', 1));
+                    if (nick.ToLower() == "nickserv" && message.Contains("This nickname is registered.") )
+                    {
+                        sendRaw("PRIVMSG nickserv :id "+this.nspass);
+                    }
+
+                    break;
+                }
                 case "PRIVMSG": 
                 {
                     String nick = raw.Split(' ').ElementAt(0).Substring(1, raw.IndexOf('!') - 1);
@@ -197,7 +215,24 @@ namespace IRCage
                 }
                 case "JOIN":
                 {
-
+                    String nick = raw.Split(' ').ElementAt(0).Substring(1, raw.IndexOf('!') - 1);
+                    NetMessage.SendData(25, -1, -1, "[IRC]" + nick + " has joined the channel.", 255, 150, 150, 150);
+                    break;
+                }
+                case "QUIT":
+                case "PART":
+                {
+                    String nick = raw.Split(' ').ElementAt(0).Substring(1, raw.IndexOf('!') - 1);
+                    NetMessage.SendData(25, -1, -1, "[IRC]" + nick + " has left the channel.", 255, 150, 150, 150);
+                    break;
+                }
+                case "KICK":
+                {
+                    //Raw sample, just to make sure. :P <- :AWRyder!~AWRyder@lala KICK #somechan someguy :AWRyder
+                    String nick = raw.Split(' ').ElementAt(0).Substring(1, raw.IndexOf('!') - 1);
+                    String kicked = raw.Split(' ').ElementAt(3);
+                    String message = raw.Substring(1).Substring(raw.IndexOf(':', 1));
+                    NetMessage.SendData(25, -1, -1, "[IRC]" + kicked + " was kicked from the channel by "+nick+" ('"+message+"').", 255, 150, 150, 150);
                     break;
                 }
 
@@ -244,5 +279,15 @@ namespace IRCage
            
         }
 
+        public int genRandomNum()
+        {
+            int nr=r.Next(10);
+            for (int i = 0; i < 3; i++)
+            {
+                nr = nr * 10;
+                nr += AIRCH.r.Next(10);
+            }
+            return nr;
+        }
     }
 }

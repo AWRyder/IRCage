@@ -48,7 +48,7 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\DeathCradle-Terraria-s-Dedicated-Server-Mod-6d000e5\Terraria_Server\Terraria_Server.csproj">
+    <ProjectReference Include="..\..\..\..\..\..\..\TDSM\Terraria_Server\Terraria_Server.csproj">
       <Project>{6B42E70C-75CD-410B-9D4A-3EA75B6F5176}</Project>
       <Name>Terraria_Server</Name>
     </ProjectReference>

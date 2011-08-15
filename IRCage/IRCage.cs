@@ -24,7 +24,7 @@ namespace IRCage
             base.Name = "IRCage";
             base.Description = "IRC integration for TDSM";
             base.Author = "AWRyder";
-            base.Version = "0.5";
+            base.Version = "0.6";
             base.TDSMBuild = 29;
             this.isEnabled = true;
 
@@ -55,7 +55,7 @@ namespace IRCage
             String nspass = pfile.getValue("nickserv-pass", "");
             String serverPass = pfile.getValue("serverpass", "");
             String quitMessage = pfile.getValue("quitMessage", "Bye Bye!");
-            String commandDelim = pfile.getValue("command_initial", "+");
+            String commandDelim = pfile.getValue("command_prefix", "+");
             bool ircColors = pfile.getValue("irc-colors", false);
             pfile.Save();
 
